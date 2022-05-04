@@ -1,0 +1,5 @@
+{
+    "api_route_prod": "https://localhost:7201/",
+    "api_route_dev": "http://localhost:5201/",
+    "session_storage": "cookies"
+}
