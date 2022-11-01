@@ -8,8 +8,8 @@
   </router-view>
   <van-tabbar v-model="active">
     <van-tabbar-item icon="cart-o">Terminal</van-tabbar-item>
+    <van-tabbar-item icon="exchange">Cancelacion</van-tabbar-item>
     <van-tabbar-item icon="user-circle-o">Perfil</van-tabbar-item>
-    <!-- <van-tabbar-item icon="setting-o">Configuracion</van-tabbar-item> -->
     <van-tabbar-item icon="chart-trending-o">Reportes</van-tabbar-item>
   </van-tabbar>
 </template>
@@ -33,16 +33,18 @@ export default {
                 this.$router.push("/Terminal")
                 //this.$router.push("/Terminal");
             }else if (newValue == 1) {
-                this.$router.push("/Session");
+                this.$router.push("/Cancel");
             }else if (newValue == 2) {
+                this.$router.push("/Session");
+            }else if (newValue == 3) {
                 this.$router.push("/Reports");
             }
         },
     },
-    created() {
-             if (!this.$cookies.get("user")) 
-                    this.$router.push('/Login');
-        }           
+    // created() {
+    //          if (!this.$cookies.get("user")) 
+    //                 this.$router.push('/Login');
+    //     }           
 }
 </script>
 

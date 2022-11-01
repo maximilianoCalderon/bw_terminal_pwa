@@ -42,6 +42,8 @@ import Vue3Transitions from 'vue3-transitions'
 import axios from 'axios'
 import { Locale } from 'vant';
 import spanish from 'vant/es/locale/lang/es-ES';
+import { vfmPlugin } from 'vue-final-modal'
+
 Locale.use('es-ES', spanish);
 const app = createApp(App);
 app.use(Tab);
@@ -94,6 +96,7 @@ app.use(Tabbar);
 app.use(TabbarItem);
 app.use(Card);
 app.use(Vue3Transitions);
+app.use(vfmPlugin);
 import VueCookies from 'vue3-cookies';
 app.use(VueCookies); 
 fetch('/config.json')
@@ -101,8 +104,8 @@ fetch('/config.json')
     .then(config => {
         if(process.env.NODE_ENV == "development")
             axios.defaults.baseURL = config.api_route_dev;
-        else
-            axios.defaults.baseURL = config.api_route_prod;
+        else //* AQUI SERA LA MISMA SIEMPRE, PARA EVITAR PROBLEMAS DE RECARGA EN TERMINAL
+            axios.defaults.baseURL = "https://businesswallet.com.mx:444/api_mit_devices/";
         app.config.globalProperties.$config = config;
         app.mount('#app');
 })

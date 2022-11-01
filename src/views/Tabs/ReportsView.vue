@@ -1,7 +1,9 @@
 <template>
   <div>
     <br><br><br>
-    <van-cell-group inset>
+    <p>Pagina en construcción</p>
+    <p>Favor de ingresar en el apartado de "Reportes" en la aplicación de <strong>OptiMit</strong> para poder ver las transacciones de esta terminal</p>
+    <!-- <van-cell-group inset>
       <van-field
         :readonly="true"
         v-model="formattedDate"
@@ -38,7 +40,7 @@
               sale.trxCard
             "
             :currency="sale.trxCurrency"
-            :thumb="require('../../assets/banks/' + sale.trxCardBrand + '.png')"
+            :thumb="'/img/banks/' + sale.trxCardBrand.toUpperCase() + '.png'"
           >
             <template #desc>
               <div>
@@ -49,9 +51,9 @@
             <template #tags>
               <van-tag
                 plain
-                :type="sale.trxResult == 'APPROVED' ? 'success' : 'danger'"
-                >{{ sale.trxResult }}</van-tag
-              >
+                :type="getStatus(sale)"
+                >{{ getStatusName(sale) }}
+              </van-tag>
             </template>
           </van-card>
         </van-pull-refresh>
@@ -100,13 +102,13 @@
           </van-card>
         </van-pull-refresh>
       </van-tab> 
-      </van-tabs>
+      </van-tabs> -->
       <br /><br /><br />
   </div>
 </template>
 
 <script>
-import { BWMITSale } from "../../entities/BWMITSale.js";
+// import { BWMITSale } from "../../entities/BWMITSale.js";
 import moment from "moment";
 import { Toast } from "vant";
 
@@ -125,110 +127,145 @@ export default {
       loadingDenied: false,
       minDate: new Date(2022, 0, 1),
       maxDate: new Date(2025, 0, 31),
+      branch: null,
+      company: null
     };
   },
-  created() {
-            //Significa que no esta logeado, lo regresamos
-            if (this.$config.session_storage == "session" || this.$config.session_storage == "local") 
-            {
-                if (!this.$storage.getStorageSync("user")) 
-                    this.$router.push('/Login');
-            } else if (this.$config.session_storage == "cookies")
-            {
-                 if (!this.$cookies.get("user")) 
-                    this.$router.push('/Login');
-            }
-        },
-  methods: {
-    async buscar() {
-      this.loadingApproved = true;
-      this.loadingError = true;
-      this.loadingDenied = true;
-      try {
-        await this.getSales();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.loadingApproved = false;
-      this.loadingError = false;
-      this.loadingDenied = false;
-      }
-    },
-    async onRefreshApproved() {
-      this.loadingApproved = true;
-      try {
-        this.sales = await new BWMITSale().data({
-          TrxResult: "APPROVED",
-          date: moment(this.date).format()
-        });
-      } catch (error) {
-        Toast.fail("No se pudieron cargar las transacciones");
-      } finally {
-        this.loadingApproved = false;
-      }
-    },
-    async onRefreshDenied() {
-      this.loadingDenied = true;
-      try {
-        this.denieds = await new BWMITSale().data({
-          TrxResult: "DENIED",
-          date: moment(this.date).format()
-        });
-      } catch (error) {
-        Toast.fail("No se pudieron cargar las transacciones");
-      } finally {
-        this.loadingDenied = false;
-      }
-    },
-    async onRefreshError() {
-      this.loadingError = true;
-      try {
-        this.errors = await new BWMITSale().data({
-          TrxResult: "ERROR",
-          date: moment(this.date).format()
-        });
-      } catch (error) {
-        Toast.fail("No se pudieron cargar las transacciones");
-      } finally {
-        this.loadingError = false;
-      }
-    },
-    async onConfirm(val) {
-      this.showCalendar = false;
-      this.date = val;
-      this.formattedDate = moment(val).format("DD/MM/YYYY");
-      this.loadingApproved = true;
-      this.loadingError = true;
-      this.loadingDenied = true;
-      try {
-        await this.getSales();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.loadingApproved = false;
-      this.loadingError = false;
-      this.loadingDenied = false;
-      }
-    },
-    async getSales() {
-      this.sales = await new BWMITSale().data({
-        TrxResult: "APPROVED",
-        date: moment(this.date).format()
-      });
+  // created() {
+  //           //Significa que no esta logeado, lo regresamos
+  //           if (this.$config.session_storage == "session" || this.$config.session_storage == "local") 
+  //           {
+  //               if (!this.$storage.getStorageSync("user")) 
+  //                   this.$router.push('/Login');
+  //           } else if (this.$config.session_storage == "cookies")
+  //           {
+  //                if (!this.$cookies.get("user")) 
+  //                   this.$router.push('/Login');
+  //                else 
+  //               {
+  //                 this.company = this.$cookies.get("company_uid");
+  //                 this.branch = this.$cookies.get("branch_uid");
+  //               }
+  //           }
+  //       },
+  // methods: {
+  //   getStatusName(sale) {
+  //     if (sale.trxUrl == "/payment/refund") {
+  //       return "REFUND"
+  //     } else {
+  //       return 'APPROVED';
+  //     }
+  //   },
+  //   getStatus(sale) {
+  //     if (sale.trxUrl == "/payment/refund") {
+  //       return "primary";
+  //     }else if ( sale.trxResult == 'APPROVED'){
+  //       return 'success';
+  //     }else {
+  //       return 'danger';
+  //     }
+  //   },
+  //   async buscar() {
+  //     this.loadingApproved = true;
+  //     this.loadingError = true;
+  //     this.loadingDenied = true;
+  //     try {
+  //       await this.getSales();
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       this.loadingApproved = false;
+  //     this.loadingError = false;
+  //     this.loadingDenied = false;
+  //     }
+  //   },
+  //   async onRefreshApproved() {
+  //     this.loadingApproved = true;
+  //     try {
+  //       this.sales = await new BWMITSale().data({
+  //         TrxResult: "APPROVED",
+  //         date: moment(this.date).format(),
+  //         id_branch: this.branch,
+  //         id_company: this.company
+  //       });
+  //     } catch (error) {
+  //       Toast.fail("No se pudieron cargar las transacciones");
+  //     } finally {
+  //       this.loadingApproved = false;
+  //     }
+  //   },
+  //   async onRefreshDenied() {
+  //     this.loadingDenied = true;
+  //     try {
+  //       this.denieds = await new BWMITSale().data({
+  //         TrxResult: "DENIED",
+  //         date: moment(this.date).format(),
+  //         id_branch: this.branch,
+  //         id_company: this.company
+  //       });
+  //     } catch (error) {
+  //       Toast.fail("No se pudieron cargar las transacciones");
+  //     } finally {
+  //       this.loadingDenied = false;
+  //     }
+  //   },
+  //   async onRefreshError() {
+  //     this.loadingError = true;
+  //     try {
+  //       this.errors = await new BWMITSale().data({
+  //         TrxResult: "ERROR",
+  //         date: moment(this.date).format(),
+  //         id_branch: this.branch,
+  //         id_company: this.company
+  //       });
+  //     } catch (error) {
+  //       Toast.fail("No se pudieron cargar las transacciones");
+  //     } finally {
+  //       this.loadingError = false;
+  //     }
+  //   },
+  //   async onConfirm(val) {
+  //     this.showCalendar = false;
+  //     this.date = val;
+  //     this.formattedDate = moment(val).format("DD/MM/YYYY");
+  //     this.loadingApproved = true;
+  //     this.loadingError = true;
+  //     this.loadingDenied = true;
+  //     try {
+  //       await this.getSales();
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       this.loadingApproved = false;
+  //     this.loadingError = false;
+  //     this.loadingDenied = false;
+  //     }
+  //   },
+  //   async getSales() {
+  //     this.sales = await new BWMITSale().data({
+  //       TrxResult: "APPROVED",
+  //       date: moment(this.date).format(),
+  //       id_branch: this.branch,
+  //       id_company: this.company
+  //     });
 
-      this.denieds = await new BWMITSale().data({
-        TrxResult: "DENIED",
-        date: moment(this.date).format()
-      });
+  //     this.denieds = await new BWMITSale().data({
+  //       TrxResult: "DENIED",
+  //       date: moment(this.date).format(),
+  //       id_branch: this.branch,
+  //       id_company: this.company
+  //     });
 
-      this.errors = await new BWMITSale().data({
-        TrxResult: "ERROR",
-        date: moment(this.date).format()
-      });
-    },
-  },
+  //     this.errors = await new BWMITSale().data({
+  //       TrxResult: "ERROR",
+  //       date: moment(this.date).format(),
+  //       id_branch: this.branch,
+  //       id_company: this.company
+  //     });
+  //   },
+  // },
   mounted() {
-    this.getSales();
+    // this.getSales();
     Toast.setDefaultOptions({ className: 'myToast' });
   },
 };

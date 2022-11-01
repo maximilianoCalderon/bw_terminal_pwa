@@ -4,12 +4,12 @@
 
 <script>
 export default {
-  created() {
-            //Significa que no esta logeado, lo regresamos
-            if (!this.$storage.getStorageSync("user")) {
-                this.$router.push('/Login');
-            }
-        }
+  // created() {
+  //           //Significa que no esta logeado, lo regresamos
+  //           if (!this.$storage.getStorageSync("user")) {
+  //               this.$router.push('/Login');
+  //           }
+  //       }
 }
 </script>
 

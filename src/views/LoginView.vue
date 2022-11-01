@@ -38,7 +38,16 @@
       Login
     </van-button>
   </div>
+  <div style="margin: 16px;">
+    <van-button round block type="warning" @click="goIndex">
+      Regresar
+    </van-button>
+  </div>
 </van-form>
+<br>
+<div v-html="getVars()"></div>
+<!-- <div>{{config}}</div> -->
+
 </template>
 
 <script>
@@ -66,7 +75,26 @@ export default {
       isLoading
     };
   },
+  computed: {
+    config() {
+      /* eslint-disable */
+      return "";
+      // return posweb ? Object.keys(posweb) : "No existe posweb";
+    }
+  },
   methods: {
+    goIndex() {
+      /* eslint-disable */
+      posweb.home();
+    },
+    getVars() {
+       /* eslint-disable */
+      try {
+        
+      } catch (error) {
+        return "No se encontro la clase 'posweb'";
+      }
+    },
     async onSubmit(values) {
       try {
         this.isLoading = true;
@@ -75,13 +103,14 @@ export default {
         this.$cookies.set('user', values.user);
         this.$cookies.set('company', response.company);
         this.$cookies.set('branch', response.branch);
-        this.$cookies.set('licence', response.licence);
+        this.$cookies.set('licence', "ZTk4MzIzYzAtMTM1Ny00YTE4LWEwYTYtM2EyYTNlMTNkYzBi");
         this.$cookies.set('name', response.name);
         this.$cookies.set('device', response.device);
+        this.$cookies.set('company_uid', response.company_tax_number);
+        this.$cookies.set('branch_uid', response.branch_tax_number);
         this.$router.push('/Admin');
       } catch (err) {
         Toast.setDefaultOptions({ className: 'myToast' });
-
         if (err.response) 
           Toast.fail(err.response.data);
         else

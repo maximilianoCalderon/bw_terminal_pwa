@@ -34,7 +34,7 @@ export class BWMITSale {
     async sale() {
         // let response = await axios.post(this.controller + '/sale', this);
         let response = await axios.post("https://integration.pos.io/payment/sale", {
-            "License": this.GetNetLicence,
+            "License": "ZTk4MzIzYzAtMTM1Ny00YTE4LWEwYTYtM2EyYTNlMTNkYzBi",
             "TrxCurrency": this.TrxCurrency,
             "TrxReference": this.TrxReference,
             "TrxAmount": this.TrxAmount,
@@ -42,6 +42,15 @@ export class BWMITSale {
         });
         console.log(response);
         console.log(response.data);
+        return response.data;
+    }
+
+    async updateConcept(TrxOriginalNumber, TrxMerchant, TrxConcept) {
+        let response = await axios.put(this.controller + '/sale/concept', {
+            TrxOriginalNumber: TrxOriginalNumber,
+            TrxMerchant: TrxMerchant,
+            TrxConcept: TrxConcept
+        });
         return response.data;
     }
 

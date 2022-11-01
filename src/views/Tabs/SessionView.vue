@@ -21,17 +21,29 @@
         :readonly="true"
       />
       <van-field
+      label="Empresa ID"
+        v-model="entity.company_uid"
+        name="validator"
+        :readonly="true"
+      />
+      <van-field
       label="Sucursal"
         v-model="entity.branch"
         name="validatorMessage"
         :readonly="true"
       />
-       <van-field
+      <van-field
+      label="Sucursal ID"
+        v-model="entity.branch_uid"
+        name="validator"
+        :readonly="true"
+      />
+       <!-- <van-field
       label="Dispositivo"
         v-model="entity.device"
         name="validatorMessage"
         :readonly="true"
-      />
+      /> -->
     </van-cell-group>
   <div style="margin: 16px;">
     <van-button @click="logout" icon="close" round block type="danger" native-type="submit">
@@ -50,7 +62,9 @@ export default {
         company: 'N / A',
         branch: 'N / A',
         name: "",
-        device: ""
+        device: "",
+        company_uid: "",
+        branch_uid: ""
       }
     }
   },
@@ -62,20 +76,24 @@ export default {
       this.$cookies.remove('licence');
       this.$cookies.remove('name');
       this.$cookies.remove('device');
+      this.$cookies.remove('company_uid');
+      this.$cookies.remove('branch_uid');
       this.$router.push('/Login');
     }
   },
   created() {
-            if (!this.$cookies.get("user")) 
-                    this.$router.push('/Login');
-            else 
-            {
-              this.entity.user = this.$cookies.get("user").toUpperCase();
-              this.entity.company = this.$cookies.get("company").toUpperCase();
-              this.entity.branch = this.$cookies.get("branch").toUpperCase();
-              this.entity.name = this.$cookies.get("name").toUpperCase();
-              this.entity.device = this.$cookies.get("device").toUpperCase();
-            }
+            // if (!this.$cookies.get("user")) 
+            //         this.$router.push('/Login');
+            // else 
+            // {
+            //   this.entity.user = this.$cookies.get("user").toUpperCase();
+            //   this.entity.company = this.$cookies.get("company").toUpperCase();
+            //   this.entity.branch = this.$cookies.get("branch").toUpperCase();
+            //   this.entity.name = this.$cookies.get("name").toUpperCase();
+            //   this.entity.device = this.$cookies.get("device").toUpperCase();
+            //   this.entity.company_uid = this.$cookies.get('company_uid');
+            //   this.entity.branch_uid = this.$cookies.get('branch_uid');
+            // }
         }
 }
 </script>
