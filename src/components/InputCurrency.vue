@@ -3,6 +3,9 @@
   ref="currencyInput"
   :value="internalValue" 
   :readonly="readonly"
+  type="number"
+  inputmode="numeric"
+  pattern="[\d\.]*"
   @keypress="onKeyPress($event)"
   @focus="onFocus($event)"
   @blur="onBlur($event)" 
@@ -35,7 +38,7 @@ export default {
         },
         modelValue(newValue) {
             this.localValue = newValue;
-            this.internalValue = currency(newValue).format();
+            this.internalValue = currency(newValue).value;
         },
     },
     methods: {
@@ -44,7 +47,7 @@ export default {
             this.internalValue = ""; 
         },
         onBlur(evt) {
-            this.internalValue = currency(evt.target.value).format();
+            this.internalValue = currency(evt.target.value).value;
             this.localValue = currency(this.internalValue).value;
         },
         onFocus(evt) {

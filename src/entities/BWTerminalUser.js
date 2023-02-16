@@ -22,4 +22,12 @@ export class BWTerminalUser {
         let response = await axios.post(this.controller, body);
         return response.data;
     }
+
+    async cancel(company_uid, password) {
+        let response = await axios.post(this.controller + '/cancel', {
+            company_uid: company_uid,
+            password: password
+        });
+        return response.data;
+    }
 }

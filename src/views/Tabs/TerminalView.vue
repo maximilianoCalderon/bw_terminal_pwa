@@ -89,6 +89,13 @@
   import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
   import InputCurrency from "../../components/InputCurrency.vue";
 
+  function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
+
+
 export default {
   data() {
     return {
@@ -143,8 +150,9 @@ export default {
     async onPay() {
       this.isLoading = true;
       try {
+        //Si no tenemos una referencia entonces crearemos una guid
         if (!this.reference)
-          throw "Escriba una referencia"
+          this.reference = uuidv4().slice(0, 20);
         if (this.amount == 0)
           throw "Ingrese una cantidad superior a 0.00"
 
@@ -225,21 +233,14 @@ export default {
     }
   },
   async created() {
-      //  if (!this.$cookies.get("user")) 
-      //               this.$router.push('/Login');
-    // this.concepts = await new BWMITConcept().get(company, branch);  
+    if (!this.$cookies.get("user")) 
+        this.$router.push('/Login');
+    this.concepts = await new BWMITConcept().get(company, branch);  
   },
   async mounted() {
     let company = this.$cookies.get('company');
     let branch = this.$cookies.get('branch');
     this.concepts = await new BWMITConcept().get(company, branch);
-    /*
-    options: [
-      {
-        text: 'Zhejiang',
-        value: '330000',
-        children: [{ text: 'Hangzhou', value: '330100' }],
-      },*/
       this.options = [];
       //Agregamos clasificaciones
       this.concepts.forEach(concept => {

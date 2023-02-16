@@ -8,12 +8,13 @@
   <br><br><br>
    <van-cell-group inset>
       <h3>Importe Devolucion</h3>
-      <h2>{{formatedAmount}}</h2>
+      <InputCurrency ref="myAmount" v-model="amount"></InputCurrency>
   </van-cell-group>
   <br>
   <van-cell-group inset>
       <van-field v-model="id" label="Folio" placeholder="..." />
-      <van-field v-model="auth" label="Auth" placeholder="..." />
+      <van-field autocomplete="off" v-model="auth" label="Auth" placeholder="..." />
+      <van-field v-if="isCancelable" autocomplete="new-password" v-model="password" label="Password" type="password" />
   </van-cell-group>
   <br>
   
@@ -21,19 +22,12 @@
 
   <van-row gutter="20" justify="center">
     <van-col span="22">
-      <van-button type="primary" round block @click="show = true">Ingresar Cantidad</van-button>
+      <van-button type="primary" round block @click="focusAmount">Ingresar Cantidad</van-button>
       </van-col>
   </van-row><br>
   <van-row gutter="20" justify="center">
     <van-col span="22"><van-button type="danger" round block @click="onRefund">Devolver</van-button></van-col>
   </van-row>
-<van-number-keyboard
-  :show="show"
-  @blur="onHide"
-  @input="onInput"
-  extra-key="."
-  @delete="onDelete"
-/>
 </div>
 </template>
 
@@ -44,6 +38,8 @@
   import Loading from 'vue3-loading-overlay';
   // Import stylesheet
   import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
+  import InputCurrency from "../../components/InputCurrency.vue";
+import { BWTerminalUser } from '@/entities/BWTerminalUser';
 
 export default {
   data() {
@@ -51,13 +47,14 @@ export default {
       amount: 0,
       id: null,
       auth: null,
+      password: '',
       reference: null,
-      show: false,
       isLoading: false,
-      pointMode: false
+      pointMode: false,
+      company_uid: null
     }
   },
-  components: { Loading },
+  components: { Loading, InputCurrency },
   computed: {
     formatedAmount() {
       return Intl.NumberFormat("en-US", {
@@ -65,26 +62,43 @@ export default {
           currency: "USD",
       }).format(parseFloat(this.amount));
     },
+    isCancelable() {
+      return this.$config.cancel_permission.find(x => x == this.company_uid) ? true : false;
+    }
   },
   methods: {
     onHide() {
-      this.show = false;
       this.pointMode = false;
+    },
+    focusAmount() {
+      this.$refs.myAmount.focus();
     },
     async onRefund() {
       this.isLoading = true;
       try {
+        if (this.amount == 0)
+          throw "Ingrese una cantidad superior a 0.00"
         if (!this.id)
           throw "Escriba el folio"
         if (!this.auth)
           throw "Escriba la autorizacion"
-        if (this.amount == 0)
-          throw "Ingrese una cantidad superior a 0.00"
+        if (this.isCancelable && this.password == null && this.password == "") 
+          throw "Escriba una contraseña"
         
+        if (this.isCancelable) {
+          let company_uid = this.$cookies.get('company_uid');
+          try {
+            await new BWTerminalUser().cancel(company_uid, this.password);
+          } catch (error) {
+            throw "La contraseña maestra es incorrecta, intente de nuevo"
+          }
+        }
+        
+          
         let BWSale = new BWMITSale();
         BWSale.TrxCurrency = "1"; //* MXN
         BWSale.TrxReference = this.reference;
-        BWSale.GetNetLicence = this.$cookies.get("licence");
+        BWSale.GetNetLicence = "ZTk4MzIzYzAtMTM1Ny00YTE4LWEwYTYtM2EyYTNlMTNkYzBi";
         BWSale.TrxDevice = this.$cookies.get("device"); //* ESTE VA POR CONFIG DE USER
         BWSale.TrxAmount = this.amount;
         BWSale.TrxUser = this.$cookies.get("user"); 
@@ -113,7 +127,6 @@ export default {
         this.reference = null;
         this.id = null;
         this.auth = null;
-        this.show = false;
         this.isLoading = false;
         this.pointMode = false;
         /* eslint-disable */
@@ -150,10 +163,11 @@ export default {
       }
     }
   },
-  // created() {
-  //      if (!this.$cookies.get("user")) 
-  //                   this.$router.push('/Login');
-  // },
+  created() {
+    if (!this.$cookies.get("user")) 
+        this.$router.push('/Login');
+    this.company_uid = this.$cookies.get('company_uid');
+  },
   mounted() {
     Toast.setDefaultOptions({ className: 'myToast' });
   }
