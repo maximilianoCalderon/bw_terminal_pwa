@@ -105,7 +105,10 @@ fetch('/config.json')
         if(process.env.NODE_ENV == "development")
             axios.defaults.baseURL = config.api_route_dev;
         else //* AQUI SERA LA MISMA SIEMPRE, PARA EVITAR PROBLEMAS DE RECARGA EN TERMINAL
-            axios.defaults.baseURL = "https://businesswallet.com.mx:444/api_mit_devices/";
+            //* CAMBIA POR PROBLEMAS DE MIT CON PUERTO
+            //axios.defaults.baseURL = "https://businesswallet.com.mx:444/api_mit_devices/";
+            axios.defaults.baseURL = "https://www.tootleerpbo.com/businesswallet/";
+
         app.config.globalProperties.$config = config;
         app.mount('#app');
 })
