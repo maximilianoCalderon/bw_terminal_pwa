@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { BWMITSale } from '@/entities/BWMITSale';
 export default {
     data()  {
         return {
@@ -49,7 +50,7 @@ export default {
             //this.$router.push('/Admin');
             /* eslint-disable */
             try {
-                //!! ESTA FUNCION CAMBIOA MUCHO PUEDE SER index() o home()
+                //!! ESTA FUNCION CAMBIA MUCHO PUEDE SER index() o home()
                 posweb.home();
             } catch (error) {
                 this.$router.push('/Admin');
@@ -67,6 +68,13 @@ export default {
         },
     },
     mounted() {
+        //TODO: LOGEAR STATE EN SERVIDOR
+        //* TIENE QUE SER SINCRONO PARA NO DETENER LO DEMAS
+        try {
+            new BWMITSale().saveState("OnApproved", response)
+        } catch (error) {
+            console.log(error);
+        }
         var response = this.getQueryVariable('response');
         if (response) {
             this.response = JSON.parse(response);

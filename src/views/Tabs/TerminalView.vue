@@ -196,9 +196,11 @@ export default {
 
         this.$cookies.set('concept', this.concepto);
         this.concepto = "";
+
+        //TODO: QUIZAS SEA NECESARIO LOGEAR STATE, PERO LO DEJAMOS EN VEREMOS, PODEMOS CREAR EL ID POR COOKIE, PERO NO CONFIARIA TANTO EN ESO
+
         /* eslint-disable */
         posweb.executeTransaction(JSON.stringify(json));
-        //Toast.success("Transaccion enviada con exito");
       } catch (error) {
         if (error.response) {
           this.error = error.response;

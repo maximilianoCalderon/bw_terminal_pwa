@@ -31,6 +31,10 @@ export class BWMITSale {
         this.integrationMode = null;
     }
 
+    saveState(state, sale) {
+        axios.post(this.controller + '/sale/response/' + state, sale);
+    }
+
     async sale() {
         // let response = await axios.post(this.controller + '/sale', this);
         let response = await axios.post("https://integration.pos.io/payment/sale", {
